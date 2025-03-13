@@ -22,8 +22,15 @@ process.on('unhandledRejection', (error) => {
 app.use(cors());
 app.use(express.json());
 
+// Log all requests
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+    next();
+});
+
 // Enhanced health check endpoint
 app.get('/', (req, res) => {
+    console.log('Health check endpoint called');
     res.status(200).json({
         status: 'healthy',
         timestamp: new Date().toISOString()
@@ -31,8 +38,12 @@ app.get('/', (req, res) => {
 });
 
 // Simple Hello World route
-app.get('/hello', (req, res) => {
-    res.json({ message: "Hello World" });
+app.get('/api/hello', (req, res) => {
+    console.log('Hello endpoint called');
+    res.status(200).json({ 
+        message: "Hello World",
+        timestamp: new Date().toISOString()
+    });
 });
 
 // Routes
@@ -41,6 +52,16 @@ app.use("/api/users", userRoutes);
 app.use("/api/roles", roleRoutes);
 app.use("/api/modules", moduleRoutes);
 app.use("/api/role-modules", roleModuleRoutes);
+
+// Handle 404 errors
+app.use((req, res) => {
+    console.log(`404 - Route not found: ${req.method} ${req.path}`);
+    res.status(404).json({ 
+        error: 'Route not found',
+        path: req.path,
+        method: req.method
+    });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -54,6 +75,14 @@ const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
     console.log('Environment:', process.env.NODE_ENV);
+    console.log('Available routes:');
+    console.log('- GET /');
+    console.log('- GET /api/hello');
+    console.log('- /api/auth/*');
+    console.log('- /api/users/*');
+    console.log('- /api/roles/*');
+    console.log('- /api/modules/*');
+    console.log('- /api/role-modules/*');
 });
 
 // Initialize database after server is running
