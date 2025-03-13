@@ -42,6 +42,9 @@ app.use((err, req, res, next) => {
     console.error('Error:', err);
     res.status(500).json({ error: 'Internal server error' });
 });
+app.get('/hello', (req, res) => {
+    res.json({ message: "Hello World" });
+});
 
 const PORT = process.env.PORT || 8080;
 
