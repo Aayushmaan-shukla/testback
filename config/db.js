@@ -4,15 +4,21 @@ require("dotenv").config();
 const createConnection = async () => {
     try {
         return await mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME || 'railway',
-            port: process.env.DB_PORT || 3306,
+            host: process.env.MYSQLHOST || process.env.DB_HOST,
+            user: process.env.MYSQLUSER || process.env.DB_USER,
+            password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD,
+            database: process.env.MYSQLDATABASE || process.env.DB_NAME || 'railway',
+            port: process.env.MYSQLPORT || process.env.DB_PORT || 3306,
             multipleStatements: true,
         });
     } catch (error) {
         console.error("Failed to create database connection:", error);
+        console.error("Connection details:", {
+            host: process.env.MYSQLHOST,
+            user: process.env.MYSQLUSER,
+            database: process.env.MYSQLDATABASE,
+            port: process.env.MYSQLPORT
+        });
         throw error;
     }
 };
