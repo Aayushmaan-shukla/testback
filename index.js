@@ -30,6 +30,11 @@ app.get('/', (req, res) => {
     });
 });
 
+// Simple Hello World route
+app.get('/hello', (req, res) => {
+    res.json({ message: "Hello World" });
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -41,9 +46,6 @@ app.use("/api/role-modules", roleModuleRoutes);
 app.use((err, req, res, next) => {
     console.error('Error:', err);
     res.status(500).json({ error: 'Internal server error' });
-});
-app.get('/hello', (req, res) => {
-    res.json({ message: "Hello World" });
 });
 
 const PORT = process.env.PORT || 8080;
